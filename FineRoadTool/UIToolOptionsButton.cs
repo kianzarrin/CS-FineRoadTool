@@ -122,7 +122,7 @@ namespace FineRoadTool
             m_button.playAudioEvents = true;
             m_button.relativePosition = Vector2.zero;
 
-            m_button.tooltip = "Fine Road Tool " + ModInfo.version + "\n\nClick here for Tool Options";
+            m_button.tooltip = "Fine Road Tool " + ModInfo.Version + "\n\nClick here for Tool Options";
 
             m_button.textColor = Color.white;
             m_button.textScale = 0.7f;
@@ -145,7 +145,7 @@ namespace FineRoadTool
                 {
                     if (m_toolOptionsPanel.absolutePosition.x < 0)
                     {
-                        m_toolOptionsPanel.absolutePosition = new Vector2(absolutePosition.x - (m_toolOptionsPanel.width - m_button.width) / 2, absolutePosition.y - m_toolOptionsPanel.height);
+                        m_toolOptionsPanel.absolutePosition = new Vector2(absolutePosition.x - ((m_toolOptionsPanel.width - m_button.width) / 2), absolutePosition.y - m_toolOptionsPanel.height);
                     }
 
                     Vector2 resolution = GetUIView().GetScreenResolution();
@@ -186,7 +186,7 @@ namespace FineRoadTool
             m_toolOptionsPanel.eventPositionChanged += (c, p) =>
             {
                 if (m_toolOptionsPanel.absolutePosition.x < 0)
-                    m_toolOptionsPanel.absolutePosition = new Vector2(absolutePosition.x - (m_toolOptionsPanel.width - m_button.width) / 2, absolutePosition.y - m_toolOptionsPanel.height);
+                    m_toolOptionsPanel.absolutePosition = new Vector2(absolutePosition.x - ((m_toolOptionsPanel.width - m_button.width) / 2), absolutePosition.y - m_toolOptionsPanel.height);
 
                 Vector2 resolution = GetUIView().GetScreenResolution();
 
@@ -387,33 +387,33 @@ namespace FineRoadTool
         private void LoadResources()
         {
             string[] spriteNames = new string[]
-			{
-				"NormalMode",
-				"NormalModeDisabled",
-				"NormalModeFocused",
-				"NormalModeHovered",
-				"NormalModePressed",
-				"BridgeMode",
-				"BridgeModeDisabled",
-				"BridgeModeFocused",
-				"BridgeModeHovered",
-				"BridgeModePressed",
-				"ElevatedMode",
-				"ElevatedModeDisabled",
-				"ElevatedModeFocused",
-				"ElevatedModeHovered",
-				"ElevatedModePressed",
-				"GroundMode",
-				"GroundModeDisabled",
-				"GroundModeFocused",
-				"GroundModeHovered",
-				"GroundModePressed",
-				"TunnelMode",
-				"TunnelModeDisabled",
-				"TunnelModeFocused",
-				"TunnelModeHovered",
-				"TunnelModePressed"
-			};
+            {
+                "NormalMode",
+                "NormalModeDisabled",
+                "NormalModeFocused",
+                "NormalModeHovered",
+                "NormalModePressed",
+                "BridgeMode",
+                "BridgeModeDisabled",
+                "BridgeModeFocused",
+                "BridgeModeHovered",
+                "BridgeModePressed",
+                "ElevatedMode",
+                "ElevatedModeDisabled",
+                "ElevatedModeFocused",
+                "ElevatedModeHovered",
+                "ElevatedModePressed",
+                "GroundMode",
+                "GroundModeDisabled",
+                "GroundModeFocused",
+                "GroundModeHovered",
+                "GroundModePressed",
+                "TunnelMode",
+                "TunnelModeDisabled",
+                "TunnelModeFocused",
+                "TunnelModeHovered",
+                "TunnelModePressed"
+            };
 
             m_atlas = ResourceLoader.CreateTextureAtlas("FineRoadTool", spriteNames, "FineRoadTool.Icons.");
 

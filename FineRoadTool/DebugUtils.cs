@@ -1,20 +1,21 @@
-﻿using UnityEngine;
-using ColossalFramework;
-using ColossalFramework.Plugins;
-
+﻿using ColossalFramework;
 using System;
+using UnityEngine;
 
 namespace FineRoadTool
 {
     public class DebugUtils
     {
-        public const string modPrefix = "[Fine Road Tool " + ModInfo.version + "] ";
+        public static readonly string modPrefix = "[Fine Road Tool " + ModInfo.Version + "] ";
 
         public static SavedBool hideDebugMessages = new SavedBool("hideDebugMessages", FineRoadTool.settingsFileName, true, true);
 
         public static void Log(string message)
         {
-            if (hideDebugMessages.value) return;
+            if (hideDebugMessages.value)
+            {
+                return;
+            }
 
             if (message == m_lastLog)
             {

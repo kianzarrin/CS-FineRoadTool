@@ -1,11 +1,11 @@
-﻿using ICities;
+﻿using ColossalFramework;
+using ColossalFramework.UI;
+using ICities;
+using System;
+using System.Reflection;
 using UnityEngine;
 
-using System;
-
-using ColossalFramework;
-using ColossalFramework.UI;
-
+[assembly: AssemblyVersion("2.0.0.0")]
 namespace FineRoadTool
 {
     public class ModInfo : IUserMod
@@ -15,7 +15,7 @@ namespace FineRoadTool
             try
             {
                 // Creating setting file
-                if(GameSettings.FindSettingsFileByName(FineRoadTool.settingsFileName) == null)
+                if (GameSettings.FindSettingsFileByName(FineRoadTool.settingsFileName) == null)
                 {
                     GameSettings.AddSettingsFile(new SettingsFile[] { new SettingsFile() { fileName = FineRoadTool.settingsFileName } });
                 }
@@ -27,57 +27,56 @@ namespace FineRoadTool
             }
         }
 
-        public string Name
-        {
-            get { return "Fine Road Tool " + version; }
-        }
+        public string Name => "Klyte's Fine Road Tool " + Version;
 
-        public string Description
-        {
-            get { return "More road tool options"; }
-        }
+        public string Description => "More road tool options";
 
         public void OnSettingsUI(UIHelperBase helper)
         {
             try
             {
-                UIHelper group = helper.AddGroup(Name) as UIHelper;
-                UIPanel panel = group.self as UIPanel;
+                var group = helper.AddGroup(Name) as UIHelper;
+                var panel = group.self as UIPanel;
 
-                UICheckBox checkBox = (UICheckBox)group.AddCheckbox("Disable debug messages logging", DebugUtils.hideDebugMessages.value, (b) =>
-                {
-                    DebugUtils.hideDebugMessages.value = b;
-                });
+                var checkBox = (UICheckBox) group.AddCheckbox("Disable debug messages logging", DebugUtils.hideDebugMessages.value, (b) =>
+                 {
+                     DebugUtils.hideDebugMessages.value = b;
+                 });
                 checkBox.tooltip = "If checked, debug messages won't be logged.";
 
                 group.AddSpace(10);
 
-                checkBox = (UICheckBox)group.AddCheckbox("Reduce rail catenary masts", FineRoadTool.reduceCatenary.value, (b) =>
-                {
-                    FineRoadTool.reduceCatenary.value = b;
-                    if (FineRoadTool.instance != null)
-                    {
-                        FineRoadTool.instance.UpdateCatenary();
-                    }
-                });
+                checkBox = (UICheckBox) group.AddCheckbox("Reduce rail catenary masts", FineRoadTool.reduceCatenary.value, (b) =>
+                 {
+                     FineRoadTool.reduceCatenary.value = b;
+                     if (FineRoadTool.instance != null)
+                     {
+                         FineRoadTool.instance.UpdateCatenary();
+                     }
+                 });
                 checkBox.tooltip = "Reduce the number of catenary mast of rail lines from 3 to 1 per segment.\n";
 
                 group.AddSpace(10);
 
-                checkBox = (UICheckBox)group.AddCheckbox("Change max turn angle for more realistic tram tracks turns", FineRoadTool.changeMaxTurnAngle.value, (b) =>
-                {
-                    FineRoadTool.changeMaxTurnAngle.value = b;
+                checkBox = (UICheckBox) group.AddCheckbox("Change max turn angle for more realistic tram tracks turns", FineRoadTool.changeMaxTurnAngle.value, (b) =>
+                 {
+                     FineRoadTool.changeMaxTurnAngle.value = b;
 
-                    if (b) RoadPrefab.SetMaxTurnAngle(FineRoadTool.maxTurnAngle);
-                    else RoadPrefab.ResetMaxTurnAngle();
-                });
+                     if (b)
+                     {
+                         RoadPrefab.SetMaxTurnAngle(FineRoadTool.maxTurnAngle);
+                     }
+                     else
+                     {
+                         RoadPrefab.ResetMaxTurnAngle();
+                     }
+                 });
                 checkBox.tooltip = "Change all roads with tram tracks max turn angle by the value below if current value is higher";
 
-                group.AddTextfield("Max turn angle: ", FineRoadTool.maxTurnAngle.ToString(), (f) =>{},
+                group.AddTextfield("Max turn angle: ", FineRoadTool.maxTurnAngle.ToString(), (f) => { },
                     (s) =>
                     {
-                        float f = 0;
-                        float.TryParse(s, out f);
+                        float.TryParse(s, out var f);
 
                         FineRoadTool.maxTurnAngle.value = Mathf.Clamp(f, 0f, 180f);
 
@@ -99,7 +98,9 @@ namespace FineRoadTool
                     UIToolOptionsButton.savedWindowY.Delete();
 
                     if (UIToolOptionsButton.toolOptionsPanel)
+                    {
                         UIToolOptionsButton.toolOptionsPanel.absolutePosition = new Vector3(-1000, -1000);
+                    }
                 });
             }
             catch (Exception e)
@@ -109,6 +110,26 @@ namespace FineRoadTool
             }
         }
 
-        public const string version = "1.3.7";
+        public static string MinorVersion => MajorVersion + "." + typeof(ModInfo).Assembly.GetName().Version.Build;
+        public static string MajorVersion => typeof(ModInfo).Assembly.GetName().Version.Major + "." + typeof(ModInfo).Assembly.GetName().Version.Minor;
+        public static string FullVersion => MinorVersion + " r" + typeof(ModInfo).Assembly.GetName().Version.Revision;
+
+        public static string Version
+        {
+            get {
+                if (typeof(ModInfo).Assembly.GetName().Version.Minor == 0 && typeof(ModInfo).Assembly.GetName().Version.Build == 0)
+                {
+                    return typeof(ModInfo).Assembly.GetName().Version.Major.ToString();
+                }
+                if (typeof(ModInfo).Assembly.GetName().Version.Build > 0)
+                {
+                    return MinorVersion;
+                }
+                else
+                {
+                    return MajorVersion;
+                }
+            }
+        }
     }
 }
