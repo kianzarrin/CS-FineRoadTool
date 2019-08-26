@@ -158,10 +158,12 @@ namespace FineRoadTool
 
                     m_toolOptionsPanel.BringToFront();
                     UpdateInfo();
+                    windowVisible.value = true;
                 }
                 else
                 {
                     m_button.normalBgSprite = "OptionBase";
+                    windowVisible.value = false;
                 }
                 UpdateInfo();
             };
@@ -179,7 +181,7 @@ namespace FineRoadTool
             m_toolOptionsPanel.absolutePosition = new Vector3(savedWindowX.value, savedWindowY.value);
             m_toolOptionsPanel.clipChildren = true;
 
-            m_toolOptionsPanel.isVisible = false;
+            m_toolOptionsPanel.isVisible = windowVisible;
 
             DebugUtils.Log("absolutePosition: " + m_toolOptionsPanel.absolutePosition);
 
@@ -294,7 +296,7 @@ namespace FineRoadTool
             m_straightSlope.name = "FRT_StraightSlope";
             m_straightSlope.label.text = "Straight slope";
             m_straightSlope.tooltip = "Makes the road go straight from A to B instead of following the terrain\n\n" + OptionsKeymapping.toggleStraightSlope.ToLocalizedString("KEYNAME") + " to toggle straight slope";
-            m_straightSlope.isChecked = false;
+            m_straightSlope.isChecked = FineRoadTool.saved_smoothSlope;
             m_straightSlope.relativePosition = new Vector3(8, 152);
 
             m_straightSlope.eventCheckChanged += (c, state) =>
