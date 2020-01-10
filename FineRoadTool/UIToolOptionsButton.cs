@@ -1,7 +1,6 @@
-﻿using UnityEngine;
-
-using ColossalFramework;
+﻿using ColossalFramework;
 using ColossalFramework.UI;
+using UnityEngine;
 
 namespace FineRoadTool
 {
@@ -41,7 +40,7 @@ namespace FineRoadTool
             isChecked = windowVisible;
         }
 
-        public override void Update()
+        public new void Update() 
         {
             if (parent != m_parent && parent != null)
             {
@@ -59,7 +58,8 @@ namespace FineRoadTool
 
         public void UpdateInfo()
         {
-            if (FineRoadTool.instance == null) return;
+            if (FineRoadTool.instance == null)
+                return;
 
             if (parent != null)
             {
@@ -194,8 +194,8 @@ namespace FineRoadTool
                     Mathf.Clamp(m_toolOptionsPanel.absolutePosition.x, 0, resolution.x - m_toolOptionsPanel.width),
                     Mathf.Clamp(m_toolOptionsPanel.absolutePosition.y, 0, resolution.y - m_toolOptionsPanel.height));
 
-                savedWindowX.value = (int)m_toolOptionsPanel.absolutePosition.x;
-                savedWindowY.value = (int)m_toolOptionsPanel.absolutePosition.y;
+                savedWindowX.value = (int) m_toolOptionsPanel.absolutePosition.x;
+                savedWindowY.value = (int) m_toolOptionsPanel.absolutePosition.y;
             };
 
             toolOptionsPanel = m_toolOptionsPanel;
@@ -258,7 +258,7 @@ namespace FineRoadTool
             {
                 if (v != FineRoadTool.instance.elevationStep)
                 {
-                    FineRoadTool.instance.elevationStep = (int)v;
+                    FineRoadTool.instance.elevationStep = (int) v;
                     UpdateInfo();
                 }
             };
@@ -307,7 +307,7 @@ namespace FineRoadTool
 
         private UICheckBox CreateCheckBox(UIComponent parent)
         {
-            UICheckBox checkBox = (UICheckBox)parent.AddUIComponent<UICheckBox>();
+            UICheckBox checkBox = (UICheckBox) parent.AddUIComponent<UICheckBox>();
 
             checkBox.width = 300f;
             checkBox.height = 20f;
@@ -320,8 +320,8 @@ namespace FineRoadTool
             sprite.relativePosition = Vector3.zero;
 
             checkBox.checkedBoxObject = sprite.AddUIComponent<UISprite>();
-            ((UISprite)checkBox.checkedBoxObject).atlas = m_toolOptionsPanel.atlas;
-            ((UISprite)checkBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
+            ((UISprite) checkBox.checkedBoxObject).atlas = m_toolOptionsPanel.atlas;
+            ((UISprite) checkBox.checkedBoxObject).spriteName = "ToggleBaseFocused";
             checkBox.checkedBoxObject.size = new Vector2(16f, 16f);
             checkBox.checkedBoxObject.relativePosition = Vector3.zero;
 
@@ -377,11 +377,16 @@ namespace FineRoadTool
 
         private void UpdateMode()
         {
-            if (m_normalModeButton.isChecked) FineRoadTool.instance.mode = Mode.Normal;
-            if (m_groundModeButton.isChecked) FineRoadTool.instance.mode = Mode.Ground;
-            if (m_elevatedModeButton.isChecked) FineRoadTool.instance.mode = Mode.Elevated;
-            if (m_bridgeModeButton.isChecked) FineRoadTool.instance.mode = Mode.Bridge;
-            if (m_tunnelModeButton.isChecked) FineRoadTool.instance.mode = Mode.Tunnel;
+            if (m_normalModeButton.isChecked)
+                FineRoadTool.instance.mode = Mode.Normal;
+            if (m_groundModeButton.isChecked)
+                FineRoadTool.instance.mode = Mode.Ground;
+            if (m_elevatedModeButton.isChecked)
+                FineRoadTool.instance.mode = Mode.Elevated;
+            if (m_bridgeModeButton.isChecked)
+                FineRoadTool.instance.mode = Mode.Bridge;
+            if (m_tunnelModeButton.isChecked)
+                FineRoadTool.instance.mode = Mode.Tunnel;
         }
 
         private void LoadResources()

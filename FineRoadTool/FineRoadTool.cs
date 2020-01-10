@@ -284,7 +284,7 @@ namespace FineRoadTool
                 {
                     if (!RoadPrefab.singleMode)
                     {
-                        var elevation = (int) m_buildingElevationField.GetValue(m_buildingTool);
+                        int elevation = (int) m_buildingElevationField.GetValue(m_buildingTool);
                         RoadPrefab.singleMode = (elevation == 0);
                     }
                 }
@@ -417,7 +417,7 @@ namespace FineRoadTool
             }
 
             // Fix first control point elevation
-            var count = (int) m_controlPointCountField.GetValue(m_netTool);
+            int count = (int) m_controlPointCountField.GetValue(m_netTool);
             if (count != m_controlPointCount && m_controlPointCount == 0 && count == 1)
             {
                 if (FixControlPoint(0))
@@ -460,9 +460,9 @@ namespace FineRoadTool
                                 cachedMaxElevation.SetValue(info.m_buildingAI, -1);
                             }
 
-                            info.m_buildingAI.GetElevationLimits(out var min, out var max);
+                            info.m_buildingAI.GetElevationLimits(out int min, out int max);
 
-                            var elevation = (int) m_buildingElevationField.GetValue(m_buildingTool);
+                            int elevation = (int) m_buildingElevationField.GetValue(m_buildingTool);
                             elevation += OptionsKeymapping.elevationUp.IsPressed(Event.current) ? 1 : -1;
 
                             m_buildingElevationField.SetValue(m_buildingTool, Mathf.Clamp(elevation, min, max));
@@ -484,7 +484,7 @@ namespace FineRoadTool
                 // Updating the elevation
                 if (m_elevation >= 0 || m_elevation <= -256)
                 {
-                    var currentElevation = (int) m_elevationField.GetValue(m_netTool);
+                    int currentElevation = (int) m_elevationField.GetValue(m_netTool);
                     if (m_elevation != currentElevation)
                     {
                         m_elevation = currentElevation;
@@ -602,7 +602,7 @@ namespace FineRoadTool
             AttachToolOptionsButton(prefab);
 
             // Is it a valid prefab?
-            m_current.m_netAI.GetElevationLimits(out var min, out var max);
+            m_current.m_netAI.GetElevationLimits(out int min, out int max);
 
             if ((m_bulldozeTool.enabled || (min == 0 && max == 0)) && !m_buttonExists)
             {
@@ -649,7 +649,7 @@ namespace FineRoadTool
 
             m_activated = false;
 
-            DebugUtils.Log("Deactivated");
+            DebugUtils.Log($"Deactivated \n {new StackTrace().ToString()}");
         }
 
         private void DisableDefaultKeys()
@@ -682,7 +682,7 @@ namespace FineRoadTool
 
         private void UpdateElevation()
         {
-            m_current.m_netAI.GetElevationLimits(out var min, out var max);
+            m_current.m_netAI.GetElevationLimits(out int min, out int max);
 
             m_elevation = Mathf.Clamp(m_elevation, min * 256, max * 256);
             if (elevationStep < 3)
@@ -704,11 +704,11 @@ namespace FineRoadTool
 
             NetNode[] nodes = NetManager.instance.m_nodes.m_buffer;
 
-            var singleMode = RoadPrefab.singleMode;
+            bool singleMode = RoadPrefab.singleMode;
             RoadPrefab.singleMode = false;
 
-            var max = NetManager.instance.m_nodes.m_size;
-            for (var i = m_fixNodesCount; i < max; i++)
+            uint max = NetManager.instance.m_nodes.m_size;
+            for (int i = m_fixNodesCount; i < max; i++)
             {
                 if (nodes[i].m_flags == NetNode.Flags.None || (nodes[i].m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.Untouchable)
                 {
@@ -723,14 +723,14 @@ namespace FineRoadTool
                 }
 
                 NetInfo info = nodes[i].Info;
+                if (info == null || info.m_netAI == null)
+                {
+                    continue;
+                }
+
+                var prefab = RoadPrefab.GetPrefab(info);
                 if ((nodes[i].m_flags & NetNode.Flags.Underground) == NetNode.Flags.Underground)
                 {
-                    if (info == null || info.m_netAI == null)
-                    {
-                        continue;
-                    }
-
-                    var prefab = RoadPrefab.GetPrefab(info);
                     if (prefab == null)
                     {
                         continue;
@@ -740,7 +740,10 @@ namespace FineRoadTool
                     {
                         nodes[i].m_elevation = 0;
                         nodes[i].m_flags = nodes[i].m_flags & ~NetNode.Flags.Underground;
-
+                        if (info != prefab.roadAI.elevated && info != prefab.roadAI.bridge)
+                        {
+                            nodes[i].m_flags = nodes[i].m_flags | NetNode.Flags.OnGround;
+                        }
                         // Updating terrain
                         try
                         {
@@ -748,6 +751,14 @@ namespace FineRoadTool
                         }
                         catch { }
                     }
+                }
+                else if (info != prefab.roadAI.elevated && info != prefab.roadAI.bridge)
+                {
+                    nodes[i].m_flags = nodes[i].m_flags | NetNode.Flags.OnGround;
+                }
+                else
+                {
+                    nodes[i].m_flags = nodes[i].m_flags & ~NetNode.Flags.OnGround;
                 }
             }
 
@@ -760,14 +771,14 @@ namespace FineRoadTool
             m_stopWatch.Reset();
             m_stopWatch.Start();
 
-            var singleMode = RoadPrefab.singleMode;
+            bool singleMode = RoadPrefab.singleMode;
             RoadPrefab.singleMode = false;
 
             NetNode[] nodes = NetManager.instance.m_nodes.m_buffer;
             NetSegment[] segments = NetManager.instance.m_segments.m_buffer;
 
-            var max = NetManager.instance.m_segments.m_size;
-            for (var i = m_fixTunnelsCount; i < max; i++)
+            uint max = NetManager.instance.m_segments.m_size;
+            for (ushort i = m_fixTunnelsCount; i < max; i++)
             {
                 if (segments[i].m_flags == NetSegment.Flags.None || (segments[i].m_flags & NetSegment.Flags.Untouchable) == NetSegment.Flags.Untouchable)
                 {
@@ -783,8 +794,8 @@ namespace FineRoadTool
 
                 NetInfo info = segments[i].Info;
 
-                var startNode = segments[i].m_startNode;
-                var endNode = segments[i].m_endNode;
+                ushort startNode = segments[i].m_startNode;
+                ushort endNode = segments[i].m_endNode;
 
                 var prefab = RoadPrefab.GetPrefab(info);
                 if (prefab == null)
@@ -795,6 +806,7 @@ namespace FineRoadTool
                 // Is it a tunnel?
                 if (info == prefab.roadAI.tunnel)
                 {
+                    nodes[startNode].m_flags = nodes[startNode].m_flags & ~NetNode.Flags.OnGround;
                     // Make sure tunnels have underground flag
                     if ((nodes[startNode].m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.None)
                     {
@@ -934,8 +946,8 @@ namespace FineRoadTool
                 return false;
             }
 
-            var pointElevation = m_controlPoints[point].m_position.y - NetSegment.SampleTerrainHeight(info, m_controlPoints[point].m_position, false, 0f);
-            var diff = pointElevation - m_controlPoints[point].m_elevation;
+            float pointElevation = m_controlPoints[point].m_position.y - NetSegment.SampleTerrainHeight(info, m_controlPoints[point].m_position, false, 0f);
+            float diff = pointElevation - m_controlPoints[point].m_elevation;
 
             // Are we off?
             if (diff <= -1f || diff >= 1f)
@@ -954,9 +966,9 @@ namespace FineRoadTool
                 return false;
             }
 
-            var count = 0;
+            int count = 0;
 
-            for (var i = 0; i < 8; i++)
+            for (int i = 0; i < 8; i++)
             {
                 int segment = node.GetSegment(i);
                 if (segment == 0 || (NetManager.instance.m_segments.m_buffer[segment].m_flags & NetSegment.Flags.Created) != NetSegment.Flags.Created)
@@ -1075,7 +1087,7 @@ namespace FineRoadTool
 
         public void UpdateCatenary()
         {
-            var probability = reduceCatenary.value ? 0 : 100;
+            int probability = reduceCatenary.value ? 0 : 100;
 
             for (uint i = 0; i < PrefabCollection<NetInfo>.PrefabCount(); i++)
             {
@@ -1085,7 +1097,7 @@ namespace FineRoadTool
                     continue;
                 }
 
-                for (var j = 0; j < info.m_lanes.Length; j++)
+                for (int j = 0; j < info.m_lanes.Length; j++)
                 {
                     if (info.m_lanes[j] != null && info.m_lanes[j].m_laneProps != null)
                     {
@@ -1095,9 +1107,9 @@ namespace FineRoadTool
                             continue;
                         }
 
-                        for (var k = 0; k < props.Length; k++)
+                        for (int k = 0; k < props.Length; k++)
                         {
-                            if (props[k] != null && props[k].m_prop != null && props[k].m_segmentOffset != 1f && props[k].m_prop.name.ToLower().Contains("powerline"))
+                            if (props[k] != null && props[k].m_prop != null && props[k].m_segmentOffset == 0f && props[k].m_prop.name.ToLower().Contains("powerline"))
                             {
                                 props[k].m_probability = probability;
                             }
