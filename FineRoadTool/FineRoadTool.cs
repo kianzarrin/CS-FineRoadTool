@@ -752,7 +752,7 @@ namespace FineRoadTool
                         catch { }
                     }
                 }
-                else if (info != prefab.roadAI.elevated && info != prefab.roadAI.bridge)
+                else if ( (info != prefab.roadAI.elevated && info != prefab.roadAI.bridge) || ((nodes[i].m_flags & (NetNode.Flags.Transition | NetNode.Flags.End)) != 0 && nodes[i].m_elevation == 0) )
                 {
                     nodes[i].m_flags = nodes[i].m_flags | NetNode.Flags.OnGround;
                 }
