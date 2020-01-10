@@ -48,6 +48,8 @@ namespace FineRoadTool
         public static SavedBool changeMaxTurnAngle = new SavedBool("_changeMaxTurnAngle", settingsFileName, false, true);
         public static SavedFloat maxTurnAngle = new SavedFloat("_maxTurnAngle", settingsFileName, 90, true);
 
+        public static SavedBool saved_smoothSlope = new SavedBool("smoothSlope", settingsFileName, false, true);
+
         private int m_elevation = 0;
         private readonly SavedInt m_elevationStep = new SavedInt("elevationStep", settingsFileName, 3, true);
 
@@ -71,7 +73,7 @@ namespace FineRoadTool
         private InfoManager.InfoMode m_infoMode = (InfoManager.InfoMode) (-1);
 
         private Mode m_mode;
-        private bool m_straightSlope = false;
+        private bool m_straightSlope = saved_smoothSlope;
 
         private bool m_buttonExists;
         private bool m_activated;
@@ -148,6 +150,8 @@ namespace FineRoadTool
                     }
 
                     prefab.Update(straightSlope);
+
+                    saved_smoothSlope.value = value;
                 }
             }
         }
