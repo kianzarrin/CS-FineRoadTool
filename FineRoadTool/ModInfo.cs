@@ -5,7 +5,7 @@ using System;
 using System.Reflection;
 using UnityEngine;
 
-[assembly: AssemblyVersion("2.0.3.0")]
+[assembly: AssemblyVersion("2.0.4.0")]
 namespace FineRoadTool
 {
     public class ModInfo : IUserMod

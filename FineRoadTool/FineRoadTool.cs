@@ -740,7 +740,7 @@ namespace FineRoadTool
                         continue;
                     }
 
-                    if (info != prefab.roadAI.tunnel && info != prefab.roadAI.slope && !info.m_netAI.IsUnderground())
+                    if ((info.m_setVehicleFlags & Vehicle.Flags.Underground) == 0 && info != prefab.roadAI.tunnel && info != prefab.roadAI.slope && !info.m_netAI.IsUnderground())
                     {
                         nodes[i].m_elevation = 0;
                         nodes[i].m_flags = nodes[i].m_flags & ~NetNode.Flags.Underground;
@@ -860,7 +860,7 @@ namespace FineRoadTool
 
                         if ((nodes[endNode].m_flags & NetNode.Flags.Untouchable) == NetNode.Flags.None)
                         {
-                            nodes[endNode].m_flags = nodes[endNode].m_flags & ~NetNode.Flags.Underground;
+                            nodes[endNode].m_flags = nodes[endNode].m_flags & ~NetNode.Flags.Underground;                            
                         }
                     }
                 }
