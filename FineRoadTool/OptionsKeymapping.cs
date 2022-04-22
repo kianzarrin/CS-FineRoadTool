@@ -74,6 +74,7 @@ namespace FineRoadTool
             uILabel.text = label;
             uIButton.text = savedInputKey.ToLocalizedString("KEYNAME");
             uIButton.objectUserData = savedInputKey;
+            uIButton.eventVisibilityChanged += ButtonVisibilityChanged;
         }
 
         private void OnEnable()
@@ -182,6 +183,12 @@ namespace FineRoadTool
                 return KeyCode.Mouse6;
             }
             return KeyCode.None;
+        }
+
+        private static void ButtonVisibilityChanged(UIComponent component, bool isVisible) {
+            if (isVisible && component.objectUserData is SavedInputKey savedInputKey) {
+                (component as UIButton).text = savedInputKey.ToLocalizedString("KEYNAME");
+            }
         }
 
         private void OnBindingKeyDown(UIComponent comp, UIKeyEventParameter p)
