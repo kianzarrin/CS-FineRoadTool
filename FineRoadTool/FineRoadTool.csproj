@@ -46,6 +46,7 @@
       $(AssemblySearchPaths);
       $(ManagedDLLPath);
       $(CitiesSkylinesBinaries);
+      ../libs
     </AssemblySearchPaths>
   </PropertyGroup>
   <ItemGroup>
@@ -61,7 +62,8 @@
     <Reference Include="System" />
     <Reference Include="System.Xml" />
     <Reference Include="UnifiedUILib, Version=2.2.8.16680, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UnifiedUILib.2.2.8\lib\net35\UnifiedUILib.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\libs\UnifiedUILib.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine">
       <HintPath>S:\Steam\steamapps\common\Cities_Skylines\Cities_Data\Managed\UnityEngine.dll</HintPath>
@@ -112,9 +114,6 @@
     <EmbeddedResource Include="Icons\TunnelModeFocused.png" />
     <EmbeddedResource Include="Icons\TunnelModeHovered.png" />
     <EmbeddedResource Include="Icons\TunnelModePressed.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

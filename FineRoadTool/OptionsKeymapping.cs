@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
+using UnifiedUI.Helpers;
+using System;
+
 namespace FineRoadTool
 {
     public class OptionsKeymapping : UICustomControl
@@ -29,6 +32,22 @@ namespace FineRoadTool
         public static readonly SavedInputKey toggleStraightSlope = new SavedInputKey("toggleStraightSlope", FineRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.S, false, true, false), true);
 
         private int count = 0;
+
+        public static void RegisterUUIHotkeys() {
+            bool IsActive() => FineRoadTool.instance.isActive;
+            Dictionary<SavedInputKey, Func<bool>> intoolKeys = new Dictionary<SavedInputKey, Func<bool>>();
+
+            // use UUI to resolve hotkey collisions
+            intoolKeys.Add(elevationUp, IsActive);
+            intoolKeys.Add(elevationDown, IsActive);
+            intoolKeys.Add(elevationReset, IsActive);
+            intoolKeys.Add(elevationStepUp, IsActive);
+            intoolKeys.Add(elevationStepDown, IsActive);
+            intoolKeys.Add(modesCycleRight, IsActive);
+            intoolKeys.Add(modesCycleLeft, IsActive);
+            intoolKeys.Add(toggleStraightSlope, IsActive);
+            UUIHelpers.RegisterHotkeys(null, activeKeys: intoolKeys);
+        }
 
         private void Awake()
         {
