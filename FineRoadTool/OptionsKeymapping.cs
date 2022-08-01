@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
+using UnifiedUI.Helpers;
+using System;
+
 namespace FineRoadTool
 {
     public class OptionsKeymapping : UICustomControl
@@ -29,6 +32,22 @@ namespace FineRoadTool
         public static readonly SavedInputKey toggleStraightSlope = new SavedInputKey("toggleStraightSlope", FineRoadTool.settingsFileName, SavedInputKey.Encode(KeyCode.S, false, true, false), true);
 
         private int count = 0;
+
+        public static void RegisterUUIHotkeys() {
+            bool IsActive() => FineRoadTool.instance.isActive;
+            Dictionary<SavedInputKey, Func<bool>> intoolKeys = new Dictionary<SavedInputKey, Func<bool>>();
+
+            // use UUI to resolve hotkey collisions
+            intoolKeys.Add(elevationUp, IsActive);
+            intoolKeys.Add(elevationDown, IsActive);
+            intoolKeys.Add(elevationReset, IsActive);
+            intoolKeys.Add(elevationStepUp, IsActive);
+            intoolKeys.Add(elevationStepDown, IsActive);
+            intoolKeys.Add(modesCycleRight, IsActive);
+            intoolKeys.Add(modesCycleLeft, IsActive);
+            intoolKeys.Add(toggleStraightSlope, IsActive);
+            UUIHelpers.RegisterHotkeys(null, activeKeys: intoolKeys);
+        }
 
         private void Awake()
         {
@@ -55,6 +74,7 @@ namespace FineRoadTool
             uILabel.text = label;
             uIButton.text = savedInputKey.ToLocalizedString("KEYNAME");
             uIButton.objectUserData = savedInputKey;
+            uIButton.eventVisibilityChanged += ButtonVisibilityChanged;
         }
 
         private void OnEnable()
@@ -163,6 +183,12 @@ namespace FineRoadTool
                 return KeyCode.Mouse6;
             }
             return KeyCode.None;
+        }
+
+        private static void ButtonVisibilityChanged(UIComponent component, bool isVisible) {
+            if (isVisible && component.objectUserData is SavedInputKey savedInputKey) {
+                (component as UIButton).text = savedInputKey.ToLocalizedString("KEYNAME");
+            }
         }
 
         private void OnBindingKeyDown(UIComponent comp, UIKeyEventParameter p)

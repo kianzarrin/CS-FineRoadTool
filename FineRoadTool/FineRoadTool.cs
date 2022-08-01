@@ -248,6 +248,8 @@ namespace FineRoadTool
             // Fix nodes
             FixNodes();
 
+            OptionsKeymapping.RegisterUUIHotkeys();
+
             DebugUtils.Log("Initialized");
         }
 
