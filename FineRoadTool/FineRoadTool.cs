@@ -11,34 +11,6 @@ using UnityEngine;
 
 namespace FineRoadTool
 {
-    public class FineRoadToolLoader : LoadingExtensionBase
-    {
-        public override void OnLevelLoaded(LoadMode mode)
-        {
-            if (FineRoadTool.instance == null)
-            {
-                // Creating the instance
-                FineRoadTool.instance = new GameObject("FineRoadTool").AddComponent<FineRoadTool>();
-
-                // Don't destroy it
-                GameObject.DontDestroyOnLoad(FineRoadTool.instance);
-            }
-            else
-            {
-                FineRoadTool.instance.Start();
-                FineRoadTool.instance.enabled = true;
-            }
-        }
-
-        public override void OnLevelUnloading()
-        {
-            if (FineRoadTool.instance != null)
-            {
-                FineRoadTool.instance.enabled = false;
-            }
-        }
-    }
-
     public class FineRoadTool : MonoBehaviour
     {
         public const string settingsFileName = "FineRoadTool";

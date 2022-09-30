@@ -4,11 +4,12 @@ using ICities;
 using System;
 using System.Reflection;
 using UnityEngine;
+using static RenderManager;
 
 [assembly: AssemblyVersion("2.0.4.0")]
 namespace FineRoadTool
 {
-    public class ModInfo : IUserMod
+    public class ModInfo : LoadingExtensionBase, IUserMod
     {
         public ModInfo()
         {
@@ -24,6 +25,29 @@ namespace FineRoadTool
             {
                 DebugUtils.Log("Couldn't load/create the setting file.");
                 DebugUtils.LogException(e);
+            }
+        }
+
+        public void OnEnabled() {
+            if (LoadingManager.instance.m_loadingComplete)
+                OnLevelLoaded();
+        }
+
+        public void OnDisabled() => GameObject.Destroy(FineRoadTool.instance.gameObject);
+
+        public override void OnLevelLoaded(LoadMode mode = default) {
+            if (FineRoadTool.instance != null) {
+                FineRoadTool.instance = new GameObject("FineRoadTool").AddComponent<FineRoadTool>();
+
+                // Don't destroy it
+                GameObject.DontDestroyOnLoad(FineRoadTool.instance);
+            } else {
+                FineRoadTool.instance.enabled = true;
+            }
+        }
+        public override void OnLevelUnloading() {
+            if (FineRoadTool.instance != null) {
+                FineRoadTool.instance.enabled = false;
             }
         }
 
